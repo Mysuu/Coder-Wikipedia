@@ -1,10 +1,14 @@
 import React from "react";
 import Head from "next/head";
 import Link from "next/dist/client/link";
+import axios from "axios";
 
+//2 hàm getStaticPaths và getStaticProps gọi trước khi component render ra html
 export const getStaticPaths = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/users/");
-  const data = await res.json();
+  //hàm này lấy toàn bộ đường dẫn(path) có thể có, nói cho nextjs biết trước
+  const res = await axios.get("https://jsonplaceholder.typicode.com/users/");
+
+  const data = await res.data;
 
   const paths = data.map((coder) => {
     return {
@@ -14,14 +18,16 @@ export const getStaticPaths = async () => {
 
   return {
     paths,
-    fallback: false,
+    fallback: false, //nếu đường dẫn k hợp lẹ cho vào not found
   };
 };
 
 export const getStaticProps = async (context) => {
   const id = context.params.id;
-  const res = await fetch(`https://jsonplaceholder.typicode.com/users/${id}`);
-  const data = await res.json();
+  const res = await axios.get(
+    `https://jsonplaceholder.typicode.com/users/${id}` //sử dụng dynamic SSG pages nên phải sử dụng hàm getStaticPaths
+  );
+  const data = await res.data;
 
   return {
     props: { coder: data },

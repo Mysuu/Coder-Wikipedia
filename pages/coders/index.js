@@ -2,13 +2,17 @@ import React from "react";
 import Head from "next/head";
 import Link from "next/link";
 import styles from "../../styles/Coder.module.css";
+import axios from "axios";
 
 export const getStaticProps = async () => {
-  const res = await fetch("https://jsonplaceholder.typicode.com/users");
-  const data = await res.json();
+  const { data } = await axios.get(
+    "https://jsonplaceholder.typicode.com/users"
+  );
+  // const data = await res.json();
 
   return {
     props: { coders: data },
+    // revalidate: 1,
   };
 };
 
